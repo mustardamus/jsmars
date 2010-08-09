@@ -1,5 +1,5 @@
 $(document).ready(function() {
-  var jm = jMARS($('#core'), 1600, 10, 100);
+  var jm = jsMARS($('#core'), 1600, 10, 100);
   
   jm.addProgram(
     ";redcode-94\n" +

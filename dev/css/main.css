@@ -1,0 +1,14 @@
+* { margin: 0; padding: 0; }
+body { background: #eee; text-align: center; }
+#wrapper { margin: 0 auto; width: 960px; text-align: left; }
+
+#field {
+  background: #555;
+  padding: 10px;
+  width: 439px;
+  height: 439px;
+  margin-top: 40px;
+  box-shadow: 0 0 10px #000; -moz-box-shadow: 0 0 10px #000; -webkit-box-shadow: 0 0 10px #000;
+  border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px;
+}
+canvas { position: absolute; }

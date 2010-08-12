@@ -22,7 +22,7 @@ var jsMARS = function(canvas, coreSize, cellSize, programLength) {
   instructions = {
     dat: {
       execute: function(instruction) {
-        console.log('hola');
+        //console.log('hola');
       },
       modifier: function(fieldA, fieldB) {
         return 'f';
@@ -35,7 +35,7 @@ var jsMARS = function(canvas, coreSize, cellSize, programLength) {
     },
     mov: {
       execute: function(instruction) {
-        console.log('hola');
+        //console.log('hola');
       },
       modifier: function(fieldA, fieldB) {
         return immediateModifier(fieldA, fieldB, 'i');
@@ -302,7 +302,7 @@ var jsMARS = function(canvas, coreSize, cellSize, programLength) {
     placePrograms();
     updateCore();
     
-    executeInstruction(programs[0].position[0]+1);
+    executeInstruction(programs[0].position[0]);
   }
   
   

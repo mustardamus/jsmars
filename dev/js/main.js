@@ -27,4 +27,13 @@ $(document).ready(function() {
   });
   
   jm.fight();
+  
+  
+  var canvas  = $('#shine').get(0),
+      context = canvas.getContext('2d');
+  
+  context.fillStyle = 'rgba(255, 255, 255, 0.08)';
+  context.arc(0, 0, 439, 0, 360, false);
+  context.fill();
+  
 });

@@ -35,7 +35,21 @@ var jsMARS = function(canvas, coreSize, cellSize, programLength) {
     },
     mov: {
       execute: function(instruction) {
-        //console.log('hola');
+        var pos = getCurrentProgramPos(),
+            inst = getInstruction(pos);
+        
+        setInstruction(pos+1, inst);
+        setInstruction(pos, {
+          instruction: inst.instruction,
+          modifier   : inst.modifier,
+          fieldA     : inst.fieldA,
+          fieldB     : inst.fieldB,
+          owner      : inst.owner,
+          status: 'executed'
+        });
+        
+        
+        setCurrentProgramPos(1);
       },
       modifier: function(fieldA, fieldB) {
         return immediateModifier(fieldA, fieldB, 'i');
@@ -254,8 +268,14 @@ var jsMARS = function(canvas, coreSize, cellSize, programLength) {
   }
   
   
+  function getInstruction(pos) {
+    return core[validPos(pos)];
+  }
+  
+  
   function executeInstruction(pos) {
-    inst = core[validPos(pos)];
+    var inst    = core[validPos(pos)];
+    inst.status = 'current';
     
     if(inst) instructions[inst.instruction].execute(inst);
     else programTerminatedCallback(programs[currentProgram]);
@@ -276,6 +296,21 @@ var jsMARS = function(canvas, coreSize, cellSize, programLength) {
     for(i = 0; i < programs.length; i++) {
       if(programs[i].name == name) return programs[i].color;
     }
+  }
+  
+  
+  function curProgram() {
+    return programs[currentProgram];
+  }
+  
+  
+  function getCurrentProgramPos() {
+    return curProgram().position[curProgram().process];
+  }
+  
+  
+  function setCurrentProgramPos(pos) {
+    curProgram().position[curProgram().process] = curProgram().position[curProgram().process] + pos;
   }
   
   
@@ -302,7 +337,13 @@ var jsMARS = function(canvas, coreSize, cellSize, programLength) {
     placePrograms();
     updateCore();
     
-    executeInstruction(programs[0].position[0]);
+    setInterval(function() {
+      executeInstruction(getCurrentProgramPos());
+      updateCore();
+      
+      if(currentProgram == programs.length - 1) currentProgram = 0;
+      else currentProgram++;
+    }, 100);
   }
   
   

@@ -35,19 +35,16 @@ var jsMARS = function(canvas, coreSize, cellSize, programLength) {
     },
     mov: {
       execute: function(instruction) {
-        var pos = getCurrentProgramPos(),
-            inst = getInstruction(pos);
+        var modeA = getMode(instruction.fieldA),
+            modeB = getMode(instruction.fieldB)
         
-        setInstruction(pos+1, inst);
-        setInstruction(pos, {
-          instruction: inst.instruction,
-          modifier   : inst.modifier,
-          fieldA     : inst.fieldA,
-          fieldB     : inst.fieldB,
-          owner      : inst.owner,
-          status: 'executed'
-        });
-        
+        switch(instruction.modifier) {
+          case 'i':
+            if(modeA == '$' && modeB == '$') {
+              setInstruction(getCurrentProgramPos() + 1, instruction);
+            }
+            break;
+        }
         
         setCurrentProgramPos(1);
       },
@@ -275,10 +272,11 @@ var jsMARS = function(canvas, coreSize, cellSize, programLength) {
   
   function executeInstruction(pos) {
     var inst    = core[validPos(pos)];
-    inst.status = 'current';
     
-    if(inst) instructions[inst.instruction].execute(inst);
-    else programTerminatedCallback(programs[currentProgram]);
+    if(inst) {
+      inst.status = 'current';
+      instructions[inst.instruction].execute(inst);
+    } else programTerminatedCallback(programs[currentProgram]);
   }
   
   
@@ -310,7 +308,19 @@ var jsMARS = function(canvas, coreSize, cellSize, programLength) {
   
   
   function setCurrentProgramPos(pos) {
-    curProgram().position[curProgram().process] = curProgram().position[curProgram().process] + pos;
+    var oldPos = curProgram().position[curProgram().process],
+        inst   = getInstruction(oldPos);
+    
+    setInstruction(oldPos, {
+      instruction: inst.instruction,
+      modifier   : inst.modifier,
+      fieldA     : inst.fieldA,
+      fieldB     : inst.fieldB,
+      owner      : inst.owner,
+      status     : 'executed'
+    });
+    
+    curProgram().position[curProgram().process] =  oldPos + pos;
   }
   
   

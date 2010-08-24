@@ -37,8 +37,7 @@ var jsMARS = function(canvas, coreSize, cellSize, programLength) {
       execute: function(instruction) {
         var inst = getInstruction(getCurrentProgramPos() + instruction.valA);
 
-        setInstruction(getCurrentProgramPos() + instruction.valB, inst);
-        
+        setInstruction(instruction.valB, inst);
         setCurrentProgramPos(1);
       },
       modifier: function(fieldA, fieldB) {
@@ -251,7 +250,7 @@ var jsMARS = function(canvas, coreSize, cellSize, programLength) {
       valB       : getValue(fieldB),
       owner      : program.name,
       status     : status
-    });
+    }, true);
     
     return true;
   }
@@ -263,9 +262,17 @@ var jsMARS = function(canvas, coreSize, cellSize, programLength) {
   }
   
   
-  function setInstruction(pos, instruction) {
+  /*function setInstruction(pos, instruction) {
     core[validPos(pos)] = instruction;
-  }
+  }*/
+  
+  var setInstruction = function() {
+    if(arguments.length == 3) { //set absolute position
+      core[validPos(arguments[0])] = arguments[1];
+    } else { //relative position
+      core[validPos(getCurrentProgramPos() + arguments[0])] = arguments[1];
+    }
+  };
   
   
   function getInstruction(pos) {
@@ -313,9 +320,8 @@ var jsMARS = function(canvas, coreSize, cellSize, programLength) {
   function setCurrentProgramPos(pos) {
     var oldPos = curProgram().position[curProgram().process],
         inst   = getInstruction(oldPos);
-        inst.status = 'executed';
     
-    setInstruction(oldPos, inst /*{
+    setInstruction(oldPos, {
       instruction: inst.instruction,
       modifier   : inst.modifier,
       modeA      : inst.modeA,
@@ -324,7 +330,7 @@ var jsMARS = function(canvas, coreSize, cellSize, programLength) {
       valB       : inst.valB,
       owner      : inst.owner,
       status     : 'executed'
-    }*/);
+    }, true);
     
     curProgram().position[curProgram().process] = oldPos + pos;
   }

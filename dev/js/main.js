@@ -12,10 +12,13 @@ $(document).ready(function() {
   
   jm.addProgram(
     ";redcode-94\n" +
-    ";name Imp 2\n" +
+    ";name Dwarf\n" +
     ";author Sebastian Senf\n" +
-    ";strategy An simple Imp\n" +
-    "mov 0,1"
+    ";strategy Bomb it\n" +
+    "add #4, 3\n"/* +
+    "mov 2, @2\n" +
+    "jmp -2\n" +
+    "dat #0, #4"*/
   );
   
   jm.compileError(function(program, line, error) {

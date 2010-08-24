@@ -35,16 +35,9 @@ var jsMARS = function(canvas, coreSize, cellSize, programLength) {
     },
     mov: {
       execute: function(instruction) {
-        var modeA = getMode(instruction.fieldA),
-            modeB = getMode(instruction.fieldB)
-        
-        switch(instruction.modifier) {
-          case 'i':
-            if(modeA == '$' && modeB == '$') {
-              setInstruction(getCurrentProgramPos() + 1, instruction);
-            }
-            break;
-        }
+        var inst = getInstruction(getCurrentProgramPos() + instruction.valA);
+
+        setInstruction(getCurrentProgramPos() + instruction.valB, inst);
         
         setCurrentProgramPos(1);
       },
@@ -63,6 +56,9 @@ var jsMARS = function(canvas, coreSize, cellSize, programLength) {
       }
     },
     add: {
+      execute: function(instruction) {
+        
+      },
       modifier: function(fieldA, fieldB) {
         return immediateModifier(fieldA, fieldB, 'f');
       }
@@ -192,6 +188,11 @@ var jsMARS = function(canvas, coreSize, cellSize, programLength) {
   }
   
   
+  function getValue(field) {
+    return parseInt(field.substr(1));
+  }
+  
+  
   function immediateModifier(fieldA, fieldB, def) {
     if(getMode(fieldA) == '#')                           return 'ab';
     if(getMode(fieldA) != '#' && getMode(fieldB) == '#') return 'b';
@@ -244,8 +245,10 @@ var jsMARS = function(canvas, coreSize, cellSize, programLength) {
     setInstruction(pos, {
       instruction: instruction,
       modifier   : modifier,
-      fieldA     : fieldA,
-      fieldB     : fieldB,
+      modeA      : modeA,
+      modeB      : modeB,
+      valA       : getValue(fieldA),
+      valB       : getValue(fieldB),
       owner      : program.name,
       status     : status
     });
@@ -271,7 +274,7 @@ var jsMARS = function(canvas, coreSize, cellSize, programLength) {
   
   
   function executeInstruction(pos) {
-    var inst    = core[validPos(pos)];
+    var inst = core[validPos(pos)];
     
     if(inst) {
       inst.status = 'current';
@@ -310,17 +313,20 @@ var jsMARS = function(canvas, coreSize, cellSize, programLength) {
   function setCurrentProgramPos(pos) {
     var oldPos = curProgram().position[curProgram().process],
         inst   = getInstruction(oldPos);
+        inst.status = 'executed';
     
-    setInstruction(oldPos, {
+    setInstruction(oldPos, inst /*{
       instruction: inst.instruction,
       modifier   : inst.modifier,
-      fieldA     : inst.fieldA,
-      fieldB     : inst.fieldB,
+      modeA      : inst.modeA,
+      modeB      : inst.modeB,
+      valA       : inst.valA,
+      valB       : inst.valB,
       owner      : inst.owner,
       status     : 'executed'
-    });
+    }*/);
     
-    curProgram().position[curProgram().process] =  oldPos + pos;
+    curProgram().position[curProgram().process] = oldPos + pos;
   }
   
   

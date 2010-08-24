@@ -35,7 +35,7 @@ var jsMARS = function(canvas, coreSize, cellSize, programLength) {
     },
     mov: {
       execute: function(instruction) {
-        var inst = getInstruction(getCurrentProgramPos() + instruction.valA);
+        var inst = getInstruction(instruction.valA);
 
         setInstruction(instruction.valB, inst);
         setCurrentProgramPos(1);
@@ -260,24 +260,33 @@ var jsMARS = function(canvas, coreSize, cellSize, programLength) {
     if(pos < 0) while(pos < 0) pos += coreSize;
     return pos % coreSize;
   }
-  
-  
-  /*function setInstruction(pos, instruction) {
-    core[validPos(pos)] = instruction;
-  }*/
+
   
   var setInstruction = function() {
-    if(arguments.length == 3) { //set absolute position
-      core[validPos(arguments[0])] = arguments[1];
-    } else { //relative position
-      core[validPos(getCurrentProgramPos() + arguments[0])] = arguments[1];
-    }
+    var pos     = arguments.length == 3 ? arguments[0] : getCurrentProgramPos() + arguments[0],
+        oldInst = getInstruction(pos, true),
+        inst    = $.extend({}, oldInst, arguments[1]);
+        
+    core[validPos(pos)] = inst;
   };
   
   
-  function getInstruction(pos) {
-    return core[validPos(pos)];
-  }
+  var getInstruction = function() {
+    var pos  = arguments.length == 2 ? arguments[0] : getCurrentProgramPos() + arguments[0]
+        inst = core[validPos(pos)];
+    
+    if(inst) return inst;
+    else return {
+      instruction: 'dat',
+      modifier   : 'f',
+      modeA      : '#',
+      modeB      : '#',
+      valA       : 0,
+      valB       : 0,
+      owner      : 0,
+      status     : 'data'
+    }
+  };
   
   
   function executeInstruction(pos) {
@@ -318,20 +327,9 @@ var jsMARS = function(canvas, coreSize, cellSize, programLength) {
   
   
   function setCurrentProgramPos(pos) {
-    var oldPos = curProgram().position[curProgram().process],
-        inst   = getInstruction(oldPos);
+    var oldPos = curProgram().position[curProgram().process];
     
-    setInstruction(oldPos, {
-      instruction: inst.instruction,
-      modifier   : inst.modifier,
-      modeA      : inst.modeA,
-      modeB      : inst.modeB,
-      valA       : inst.valA,
-      valB       : inst.valB,
-      owner      : inst.owner,
-      status     : 'executed'
-    }, true);
-    
+    setInstruction(oldPos, { status: 'executed' }, true);
     curProgram().position[curProgram().process] = oldPos + pos;
   }
   

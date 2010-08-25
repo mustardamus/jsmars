@@ -1,14 +1,52 @@
 * { margin: 0; padding: 0; }
-body { background: #eee; text-align: center; }
-#wrapper { margin: 0 auto; width: 960px; text-align: left; }
+html { font-size: 16px; }
+body { background: #eee; text-align: center; font-size: 62.5%; font-family: Helvetica, Arial, sans-serif; }
+#wrapper { margin: 0 auto; width: 960px; text-align: left; position: relative; }
+
+a { color: #2572B3; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+h1 {
+  font-size: 2.2em;
+  text-shadow: 1px 1px 0 white;
+  background: #ddd;
+  padding: 10px;
+  border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px;
+  margin: 20px 0 40px 0;
+}
+h1 span { display: block; font-size: 0.77em; color: #666; }
+
+#navi { position: absolute; top: 24px; right: 10px; list-style: none; }
+#navi li { float: left; padding: 0 10px; font-size: 1.4em; }
+
+
+#game { position: absolute; padding-left: 500px; }
+
+#controls {
+  background: #ddd;
+  width: 200px;
+  text-align: center;
+  padding: 10px 0;
+  border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px;
+  box-shadow: 0 3px 7px #aaa; -moz-box-shadow: 0 3px 7px #aaa; -webkit-box-shadow: 0 3px 7px #aaa;
+  position: absolute; bottom: -26px; left: 130px;
+}
+#controls a { font-size: 1.6em; padding: 0 5px; }
 
 #field {
+  position: absolute; top: 0; left: 0;
   background: #555;
   padding: 10px;
   width: 439px;
   height: 439px;
-  margin-top: 10px;
   box-shadow: 0 0 10px #000; -moz-box-shadow: 0 0 10px #000; -webkit-box-shadow: 0 0 10px #000;
   border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px;
 }
 canvas { position: absolute; }
+
+
+#about { position: absolute; left: -2000px; }
+
+h2 { font-size: 1.6em; margin-bottom: 12px; }
+.program { margin-bottom: 30px; width: 400px; }
+textarea { width: 100%; height: 170px; }

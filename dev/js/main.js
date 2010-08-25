@@ -1,25 +1,8 @@
 $(document).ready(function() {
   var jm = jsMARS($('#core'), 1600, 10, 100);
   
-  jm.addProgram(
-    ";redcode-94\n" +
-    ";name Imp\n" +
-    ";author Sebastian Senf\n" +
-    ";strategy An simple Imp\n" +
-    ";strategy Just another strategy line :)\n"+
-    "mov 0,1"
-  );
-  
-  jm.addProgram(
-    ";redcode-94\n" +
-    ";name Dwarf\n" +
-    ";author Sebastian Senf\n" +
-    ";strategy Bomb it\n" +
-    "add #4, 3\n"/* +
-    "mov 2, @2\n" +
-    "jmp -2\n" +
-    "dat #0, #4"*/
-  );
+  jm.addProgram($('#program1').val());
+  jm.addProgram($('#program2').val());
   
   jm.compileError(function(program, line, error) {
     if(console) console.log('Compile error in program "' + program.name + '" in line "' + line + '": ' + error);
@@ -29,7 +12,29 @@ $(document).ready(function() {
     if(console) console.log('Program "' + program.name + '" got terminated.');
   });
   
-  jm.fight();
+  
+  
+  
+  $('#start').click(function() {
+    jm.fight();
+    return false;
+  });
+  
+  $('#pause').toggle(function() {
+    jm.pause();
+    $(this).text('Resume');
+  }, function() {
+    jm.fight();
+    $(this).text('Pause');
+  });
+  
+  $('#reset').click(function() {
+    jm.pause();
+    jm.initialize();
+    return false;
+  }).click();
+  
+  
   
   
   var canvas  = $('#shine').get(0),
@@ -39,4 +44,20 @@ $(document).ready(function() {
   context.arc(0, 0, 439, 0, 360, false);
   context.fill();
   
+  
+  var game  = $('#game'),
+      about = $('#about');
+  
+  function swap(gameLeft, aboutLeft) {
+    game.animate({ left: gameLeft });
+    about.animate({ left: aboutLeft });
+  }
+  
+  $('#navi a:last').toggle(function() {
+    swap(-2000, 0);
+    $(this).text('Back to the game');
+  }, function() {
+    swap(0, -2000);
+    $(this).text('About this 10k entry');
+  });
 });

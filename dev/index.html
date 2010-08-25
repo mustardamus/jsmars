@@ -12,10 +12,56 @@
   </head>
   <body>
     <div id="wrapper">
-      <div id="field">
-        <canvas id="core" width="439" height="439"></canvas>
-        <canvas id="shine" width="439" height="439"></canvas>        
+      <h1>
+        JavaScript Core War MARS
+        <span>The 1984 hit game in your Browser</span>
+      </h1>
+      
+      <ul id="navi">
+        <li><a href="http://en.wikipedia.org/wiki/Core_War">What's Core War?</a></li>
+        <li><a href="http://vyznev.net/corewar/guide.html">How to play?</a></li>
+        <li><a href="#about">About this 10k entry</a></li>
+      </ul>
+      
+      <div id="game">
+        <div id="field">
+          <canvas id="core" width="439" height="439"></canvas>
+          <canvas id="shine" width="439" height="439"></canvas>        
+        </div>
+        
+        <div id="controls">
+          <a href="#start" id="start">Start</a>
+          <a href="#pause" id="pause">Pause</a>
+          <a href="#reset" id="reset">Reset</a>
+        </div>
+        
+        <div class="program">
+          <h2>Program 1</h2>
+          <textarea id="program1">;redcode-94
+;name Imp
+;author A.K. Dewdney
+;strategy Copy instrcution, execute, repeat
+          
+mov 0, 1</textarea>
+        </div>
+        
+        <div class="program">
+          <h2>Program 2</h2>
+          <textarea id="program2">;redcode-94
+;name Dwarf
+;author A.K. Dewdney
+;strategy Bomb with dat's
+          
+add #4, 3
+mov 2, @2
+jmp -2
+dat #0, #2</textarea>
+        </div>
       </div>
-    </div>    
+      
+      <div id="about">
+        this is about
+      </div>
+    </div>
   </body>
 </html>

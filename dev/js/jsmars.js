@@ -14,6 +14,7 @@ var jsMARS = function(canvas, coreSize, cellSize, programLength) {
                         edited  : 0.4,
                         data    : 0.2
                       },
+      cycleInterval = 0,
       compileErrorCallback,
       programTerminatedCallback;
   
@@ -35,9 +36,13 @@ var jsMARS = function(canvas, coreSize, cellSize, programLength) {
     },
     mov: {
       execute: function(instruction) {
-        var inst = getInstruction(instruction.valA);
-
-        setInstruction(instruction.valB, inst);
+        if(instruction.modeA == '$' && instruction.modeB == '$') {
+          setInstruction(instruction.valB, getInstruction(instruction.valA));
+        } else {
+          var inst = getInstruction(instruction.valB);
+          setInstruction(inst.valB, getInstruction(instruction.valA));
+        }
+        
         setCurrentProgramPos(1);
       },
       modifier: function(fieldA, fieldB) {
@@ -56,7 +61,12 @@ var jsMARS = function(canvas, coreSize, cellSize, programLength) {
     },
     add: {
       execute: function(instruction) {
+        var inst = getInstruction(instruction.valB);
+        inst.valB += instruction.valA;
+        inst.status = 'edited';
         
+        setInstruction(instruction.valB, inst);
+        setCurrentProgramPos(1);
       },
       modifier: function(fieldA, fieldB) {
         return immediateModifier(fieldA, fieldB, 'f');
@@ -89,6 +99,9 @@ var jsMARS = function(canvas, coreSize, cellSize, programLength) {
       }
     },
     jmp: {
+      execute: function(instruction) {
+        setCurrentProgramPos(instruction.valA);
+      },
       modifier: function(fieldA, fieldB) {
         return 'b';
       }
@@ -199,6 +212,9 @@ var jsMARS = function(canvas, coreSize, cellSize, programLength) {
   }
   
   
+  
+  
+  
   function placeInstruction(pos, line, program) {
     var fieldsStart = line.indexOf(' '),
         instruction = line.substr(0, fieldsStart),
@@ -263,9 +279,14 @@ var jsMARS = function(canvas, coreSize, cellSize, programLength) {
 
   
   var setInstruction = function() {
-    var pos     = arguments.length == 3 ? arguments[0] : getCurrentProgramPos() + arguments[0],
+    var pos     = arguments[0],
         oldInst = getInstruction(pos, true),
         inst    = $.extend({}, oldInst, arguments[1]);
+    
+    if(arguments.length != 3) {
+      pos  = getCurrentProgramPos() + arguments[0];
+      inst = $.extend({}, inst, { owner: curProgram().name });
+    }
         
     core[validPos(pos)] = inst;
   };
@@ -293,7 +314,6 @@ var jsMARS = function(canvas, coreSize, cellSize, programLength) {
     var inst = core[validPos(pos)];
     
     if(inst) {
-      inst.status = 'current';
       instructions[inst.instruction].execute(inst);
     } else programTerminatedCallback(programs[currentProgram]);
   }
@@ -353,11 +373,14 @@ var jsMARS = function(canvas, coreSize, cellSize, programLength) {
   }
   
   
-  function fight() {
+  function initialize() {
     placePrograms();
     updateCore();
-    
-    setInterval(function() {
+  }
+  
+  
+  function fight() {
+    cycleInterval = setInterval(function() {
       executeInstruction(getCurrentProgramPos());
       updateCore();
       
@@ -367,8 +390,15 @@ var jsMARS = function(canvas, coreSize, cellSize, programLength) {
   }
   
   
+  function pause() {
+    clearInterval(cycleInterval);
+  }
+  
+  
   return {
+    initialize       : initialize,
     fight            : fight,
+    pause            : pause,
     addProgram       : addProgram,
     compileError     : compileError,
     programTerminated: programTerminated
